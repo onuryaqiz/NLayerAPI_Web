@@ -10,7 +10,7 @@ namespace NLayer.Core
     {
         public int Id { get; set; } //EntityId yerine sadece Id yazdık. FrCore Primary Key olarak algılamıyor. Custom isim yerine FrCore anlayacağı şekilde yazmak gerekiyor.
         public DateTime CreatedDate { get; set; }
-        public DateTime UpdatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; } //İlk kayıt eklendiğinde null olması lazım . 
 
 
     }
