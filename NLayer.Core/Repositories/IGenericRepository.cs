@@ -7,7 +7,7 @@ namespace NLayer.Core.Repositories
         Task<T> GetByIdAsync(int id);
 
 
-        IQueryable<T> GetAll(Expression<Func<T, bool>> expression);
+        IQueryable<T> GetAll();
 
         //T  x'e denk geliyor.
         // veri tabanına gitmez             // ToList ile DB'ye gider.

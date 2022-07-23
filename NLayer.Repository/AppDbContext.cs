@@ -26,8 +26,8 @@ namespace NLayer.Repository
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());//IEntityTypeConfiguration Interface'e sahip olan class'ları bulup Reflection yaparak class'ları buluyor.
-            //modelBuilder.ApplyConfiguration(new ProductConfiguration()) ile yazabiliriz. Fakat birçok assembly yani class library için bunu yapmak yerine 
-            //yukarıdaki metod ile bu sorunu çözebiliriz.
+            //                                                                              modelBuilder.ApplyConfiguration(new ProductConfiguration()) ile yazabiliriz. Fakat birçok assembly yani class library için bunu yapmak yerine 
+            //                                                                              yukarıdaki metod ile bu sorunu çözebiliriz.
 
             modelBuilder.Entity<ProductFeature>().HasData(new ProductFeature()
             {
@@ -40,7 +40,7 @@ namespace NLayer.Repository
             },
             new ProductFeature()
             {
-                Id = 1,
+                Id = 2,
                 Color = "Mavi",
                 Height = 300,
                 Width = 500,
