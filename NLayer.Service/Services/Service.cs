@@ -49,24 +49,33 @@ namespace NLayer.Service.Services
             return await _repository.GetAll().ToListAsync();
         }
 
-        public Task RemoveAsync(T entity)
+        public async Task<T> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _repository.GetByIdAsync(id);
         }
 
-        public Task RemoveRangeAsync(IEnumerable<T> entities)
+        public async Task RemoveAsync(T entity) //Repository'de async değil!
         {
-            throw new NotImplementedException();
+            _repository.Remove(entity);
+            await _unitOfWork.CommitAsync();
         }
 
-        public Task UpdateAsync(T entity)
+        public async Task RemoveRangeAsync(IEnumerable<T> entities)
         {
-            throw new NotImplementedException();
+            _repository.RemoveRange(entities);
+            await _unitOfWork.CommitAsync();
         }
 
-        public IQueryable<T> Where(Expression<Func<T, bool>> expression)
+        public async Task UpdateAsync(T entity)
         {
-            throw new NotImplementedException();
+            _repository.Update(entity);
+            await _unitOfWork.CommitAsync();
+        }
+
+        public IQueryable<T> Where(Expression<Func<T, bool>> expression) //async yok. ToListAsync() API tarafında kullanacağız.
+        {
+            return _repository.Where(expression);
+
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NLayer.Core
+namespace NLayer.Core.Models
 {
     public class ProductFeature //Product'a bağlı olduğu için BaseEntity'yi miras olarak almadık.
     {
