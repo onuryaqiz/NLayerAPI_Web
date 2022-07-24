@@ -44,5 +44,36 @@ namespace NLayer.API.Controllers
 
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Save(ProductDto productDto)
+        {
+            var product = await _service.AddAsync(_mapper.Map<Product>(productDto)); // Dto geldiği için product'u productDto 'ya dönüştür.
+            var productsDtos = _mapper.Map<ProductDto>(product);
+
+            return CreateActionResult(CustomResponseDto<ProductDto>.Success(201, productsDtos)); // Update işlemi gerçekleştiği için 201 durum kodu verdik. 200 de olabilir. Fakat Best Practice için 201 daha uygun.
+
+        }
+
+        [HttpPut]
+
+        public async Task<IActionResult> Update(ProductUpdateDto productDto)
+        {
+            await _service.UpdateAsync(_mapper.Map<Product>(productDto)); // Geriye bir şey dönülmediği için var product ve Map kaldırıldı.
+
+            return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204)); // T Data almadığı için NoContentDto eklendi.
+
+
+        }
+        // DELETE api/products/5
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Remove(int id)
+        {
+            var product = await _service.GetByIdAsync(id);
+            await _service.RemoveAsync(product);
+
+            return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));
+
+        }
     }
 }
