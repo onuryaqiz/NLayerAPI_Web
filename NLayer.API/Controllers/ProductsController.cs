@@ -12,20 +12,20 @@ namespace NLayer.API.Controllers
     {
         // Controller sadece servisleri bilir. Kesinlikle repository miras almayacak.
         private readonly IMapper _mapper;
-        private readonly IService<Product> _service;
-        private readonly IProductService _productService;
+
+        private readonly IProductService _service;
         public ProductsController(IService<Product> service, IMapper mapper, IProductService productService)
         {
-            _service = service;
+
             _mapper = mapper;
-            _productService = productService;
+            _service = productService;
         }
 
         // GET api/products/GetProductsWithCategory , 2 adet Get olunca Framework hata fırlatmasın diye metodun ismini belirttik.
         [HttpGet("GetProductsWithCategory")] //"[action]" da yapabiliriz. Metodun ismini action çağıracak. 
         public async Task<IActionResult> GetProductsWithCategory()
         {
-            return CreateActionResult(await _productService.GetProductWithCategory()); // Controller içerisinde action metodlarda minimum kod bulundurduk.
+            return CreateActionResult(await _service.GetProductWithCategory()); // Controller içerisinde action metodlarda minimum kod bulundurduk.
         }
 
 
