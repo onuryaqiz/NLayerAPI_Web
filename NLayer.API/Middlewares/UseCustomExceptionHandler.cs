@@ -23,7 +23,9 @@ namespace NLayer.API.Middlewares
                     var statusCode = exceptionFeature.Error switch
                     {
                         ClientSideException => 400, // client kaynaklı hata ise 400 atıyoruz. 
-                        _ => 500 // başka bir hata ise 500 dön .
+                        NotFoundException => 404,
+
+                        _ => 500 // başka bir hata ise 500 dön . 500 ise client'a göstermemek daha doğrudur. Nlog gibi library ile yapılabilir.
                     };
                     context.Response.StatusCode = statusCode;
 
