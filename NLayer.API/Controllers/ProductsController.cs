@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NLayer.Core.DTOs;
 using NLayer.Core.Models;
@@ -8,12 +7,15 @@ using NLayer.Core.Services;
 namespace NLayer.API.Controllers
 {
 
+
     public class ProductsController : CustomBaseController // Business kod yani Service kodu buraya Best Practice için yazılmayacak. Olabildiğince temiz olmalı.
     {
         // Controller sadece servisleri bilir. Kesinlikle repository miras almayacak.
         private readonly IMapper _mapper;
 
         private readonly IProductService _service;
+
+
         public ProductsController(IService<Product> service, IMapper mapper, IProductService productService)
         {
 
@@ -58,6 +60,7 @@ namespace NLayer.API.Controllers
 
 
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Save(ProductDto productDto)
