@@ -3,7 +3,7 @@ using NLayer.Core.Services;
 using NLayer.Core.UnitOfWorks;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;

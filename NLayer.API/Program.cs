@@ -26,6 +26,11 @@ builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 
 builder.Services.AddAutoMapper(typeof(MapProfile)); // Service.cs'deki MApProfile'ı AutoMapper'e ekledik.
 
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
+
+
+
 builder.Services.AddDbContext<AppDbContext>(x =>
 {
     x.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"), option =>
