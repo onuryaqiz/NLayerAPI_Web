@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NLayer.API.Filters;
+using NLayer.API.Middlewares;
 using NLayer.Core.Repositories;
 using NLayer.Core.Services;
 using NLayer.Core.UnitOfWorks;
@@ -69,13 +70,15 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger(); // middleware'dir.
+    app.UseSwaggerUI();// middleware'dir.
 }
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseCustomException(); // kendi middleware'imiz. Buradaki sıralama da önemli. app.UseAuthorization'ın altına ve üstüne yazmak işlem sıralamasında etkilidir.
+
+app.UseAuthorization();  // token doğrulaması
 
 app.MapControllers();
 
