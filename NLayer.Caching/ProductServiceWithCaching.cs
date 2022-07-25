@@ -5,8 +5,10 @@ using NLayer.Core.Models;
 using NLayer.Core.Repositories;
 using NLayer.Core.Services;
 using NLayer.Core.UnitOfWorks;
+using NLayer.Service.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -32,18 +34,27 @@ namespace NLayer.Caching
 
             if (!_memoryCache.TryGetValue(CacheProductKey, out _)) // geriye boolean döner. Sadece true/false olduğunu öğreniyoruz. Data var mı yok mu onu öğrenmeye çalışıyoruz.Cache'deki datayı almak istemiyoruz.
             {
-                _memoryCache.Set(CacheProductKey, _productRepository.GetAll().ToList());
+                _memoryCache.Set(CacheProductKey, _productRepository.GetProductWithCategory());
             }
         }
         // Open-closed prensibine uygun caching yapıyoruz.
-        public Task<Product> AddAsync(Product entity)
+        public async Task<Product> AddAsync(Product entity)
         {
-            throw new NotImplementedException();
+            await _productRepository.AddAsync(entity); // Çok sık erişeceğimiz ama çok sık güncellemeyeceğimiz data en iyi caching'dir.
+            await _unitOfWork.CommitAsync();
+            await CacheAllProductsAsync();
+
+            return entity;
+
         }
 
-        public Task<IEnumerable<Product>> AddRangeAsync(IEnumerable<Product> entities)
+        public async Task<IEnumerable<Product>> AddRangeAsync(IEnumerable<Product> entities)
         {
-            throw new NotImplementedException();
+            await _productRepository.AddRangeAsync(entities); // Çok sık erişeceğimiz ama çok sık güncellemeyeceğimiz data en iyi caching'dir.
+            await _unitOfWork.CommitAsync();
+            await CacheAllProductsAsync();
+
+            return entities;
         }
 
         public Task<bool> AnyAsync(Expression<Func<Product, bool>> expression)
@@ -51,39 +62,62 @@ namespace NLayer.Caching
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Product>> GetAllAsync()
+        public Task<IEnumerable<Product>> GetAllAsync() // List Ienumerable Interface'ini implemente ettiği için List yerine IEnumerable yazdık. 
         {
-            throw new NotImplementedException();
+            return Task.FromResult(_memoryCache.Get<IEnumerable<Product>>(CacheProductKey)); // Burada cache döndük.
         }
 
         public Task<Product> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var product = _memoryCache.Get<List<Product>>(CacheProductKey).FirstOrDefault(x => x.Id == id);
+
+            if (product == null)
+            {
+                throw new NotFoundException($"{typeof(Product).Name}({id}) not found");
+            }
+            return Task.FromResult(product); // await kullanmıyoruz. Static method üzerinden Task.FromResult dönüyoruz.
         }
 
         public Task<CustomResponseDto<List<ProductWithCategoryDto>>> GetProductWithCategory()
         {
-            throw new NotImplementedException();
+            var products = _memoryCache.Get<IEnumerable<Product>>(CacheProductKey); // Burada ise , DTO ve customResponse istediği için döndük. 
+
+
+            var productsWithCategoryDto = _mapper.Map<List<ProductWithCategoryDto>>(products);
+
+            return Task.FromResult(CustomResponseDto<List<ProductWithCategoryDto>>.Success(200, productsWithCategoryDto)); // Geriye bir Task durumlarda , yani async dönmemiz gereken durumlarda, ama method içerisinde await kullanmadığımızda Task.FromResult kullanırız. 
         }
 
-        public Task RemoveAsync(Product entity)
+        public async Task RemoveAsync(Product entity)
         {
-            throw new NotImplementedException();
+            _productRepository.Remove(entity);
+            await _unitOfWork.CommitAsync();
+
+            await CacheAllProductsAsync();
         }
 
-        public Task RemoveRangeAsync(IEnumerable<Product> entities)
+        public async Task RemoveRangeAsync(IEnumerable<Product> entities)
         {
-            throw new NotImplementedException();
+            _productRepository.RemoveRange(entities);
+            await _unitOfWork.CommitAsync();
+            await CacheAllProductsAsync();
         }
 
-        public Task UpdateAsync(Product entity)
+        public async Task UpdateAsync(Product entity)
         {
-            throw new NotImplementedException();
+            _productRepository.Update(entity);
+            await _unitOfWork.CommitAsync();
+            await CacheAllProductsAsync();
         }
 
         public IQueryable<Product> Where(Expression<Func<Product, bool>> expression)
         {
-            throw new NotImplementedException();
+            return _memoryCache.Get<List<Product>>(CacheProductKey).Where(expression.Compile()).AsQueryable(); // EFCore'dan değil cache'den bu sorguyu çekiyoruz.
+        }
+
+        public async Task CacheAllProductsAsync()
+        {
+            _memoryCache.Set(CacheProductKey, await _productRepository.GetAll().ToListAsync());
         }
     }
 }
