@@ -54,7 +54,7 @@ namespace NLayer.Service.Services
         {
             var hasProduct = await _repository.GetByIdAsync(id);
 
-            if (hasProduct == null)
+            if (hasProduct == null) // NotFoundFilter metodun içine girmeden kontrol sağlıyor . Burada ise metodun içine giriş yapıldıktan sonra kontrol sağladık.
             {
                 throw new NotFoundException($"{typeof(T).Name}({id}) not found"); // $ ile tipini aldık.
             }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NLayer.API.Filters;
 using NLayer.Core.DTOs;
 using NLayer.Core.Models;
 using NLayer.Core.Services;
@@ -48,7 +49,10 @@ namespace NLayer.API.Controllers
 
             return CreateActionResult(CustomResponseDto<List<ProductDto>>.Success(200, productsDtos));
         }
+
+
         // Örnek : api/products/5 olan data gelir.
+        [ServiceFilter(typeof(NotFoundFilter<Product>))] // Program.cs tarafında service'e ekledik.
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {

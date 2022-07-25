@@ -34,6 +34,8 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped(typeof(NotFoundFilter<>));
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>(); // Interface'leri eklemek için migration ekliyoruz.
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
