@@ -34,7 +34,7 @@ namespace NLayer.Caching
 
             if (!_memoryCache.TryGetValue(CacheProductKey, out _)) // geriye boolean döner. Sadece true/false olduğunu öğreniyoruz. Data var mı yok mu onu öğrenmeye çalışıyoruz.Cache'deki datayı almak istemiyoruz.
             {
-                _memoryCache.Set(CacheProductKey, _productRepository.GetProductWithCategory());
+                _memoryCache.Set(CacheProductKey, _productRepository.GetProductWithCategory().Result);
             }
         }
         // Open-closed prensibine uygun caching yapıyoruz.
@@ -64,7 +64,8 @@ namespace NLayer.Caching
 
         public Task<IEnumerable<Product>> GetAllAsync() // List Ienumerable Interface'ini implemente ettiği için List yerine IEnumerable yazdık. 
         {
-            return Task.FromResult(_memoryCache.Get<IEnumerable<Product>>(CacheProductKey)); // Burada cache döndük.
+            var products = _memoryCache.Get<IEnumerable<Product>>(CacheProductKey);
+            return Task.FromResult(products); // Burada cache döndük.
         }
 
         public Task<Product> GetByIdAsync(int id)

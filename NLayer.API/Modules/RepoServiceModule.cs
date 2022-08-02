@@ -39,6 +39,8 @@ namespace NLayer.API.Modules
                 Where(x => x.Name.EndsWith("Service")).AsImplementedInterfaces().InstancePerLifetimeScope();
             // InstancePerLifetimeScope => Asp.net de Scope'a denk geliyor.
             // InstancePerDependency => transient'a karşılık geliyor.  
+
+            builder.RegisterType<ProductServiceWithNoCaching>().As<IProductService>();
         }
     }
 }
