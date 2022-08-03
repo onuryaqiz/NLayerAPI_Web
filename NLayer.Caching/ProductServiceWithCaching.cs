@@ -79,14 +79,14 @@ namespace NLayer.Caching
             return Task.FromResult(product); // await kullanmıyoruz. Static method üzerinden Task.FromResult dönüyoruz.
         }
 
-        public Task<CustomResponseDto<List<ProductWithCategoryDto>>> GetProductWithCategory()
+        public Task<List<ProductWithCategoryDto>> GetProductWithCategory()
         {
             var products = _memoryCache.Get<IEnumerable<Product>>(CacheProductKey); // Burada ise , DTO ve customResponse istediği için döndük. 
 
 
             var productsWithCategoryDto = _mapper.Map<List<ProductWithCategoryDto>>(products);
 
-            return Task.FromResult(CustomResponseDto<List<ProductWithCategoryDto>>.Success(200, productsWithCategoryDto)); // Geriye bir Task durumlarda , yani async dönmemiz gereken durumlarda, ama method içerisinde await kullanmadığımızda Task.FromResult kullanırız. 
+            return Task.FromResult(productsWithCategoryDto); // Geriye bir Task durumlarda , yani async dönmemiz gereken durumlarda, ama method içerisinde await kullanmadığımızda Task.FromResult kullanırız. 
         }
 
         public async Task RemoveAsync(Product entity)
