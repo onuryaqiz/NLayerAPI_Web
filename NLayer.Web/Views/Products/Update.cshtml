@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Save";
+    ViewData["Title"] = "Update";
 }
 @model ProductDto
 <h1>Save Product</h1>
@@ -8,8 +8,8 @@
 
     <div  class=col-md-6>
 
-        <form asp-action="Save" method="post" asp-controller="Products">
-
+        <form asp-action="Update" method="post" asp-controller="Products">
+            <input type="hidden" asp-for="Id"/>
             <div class="form-group">
                 <label asp-for="Name"></label>
                 <input asp-for="Name" class="form-control" />
@@ -41,7 +41,7 @@
 
             <div class="form-group">
 
-                <input type="submit" value="Save" class="btn-primary" />
+                <input type="submit" value="Update" class="btn-primary" />
 
             </div>
         </form>

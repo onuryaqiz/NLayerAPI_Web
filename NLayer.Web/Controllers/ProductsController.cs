@@ -38,22 +38,57 @@ namespace NLayer.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Save(ProductDto productDto)
         {
+            if (ModelState.IsValid)
 
             {
                 await _services.AddAsync(_mapper.Map<Product>(productDto)); // ProductDto'yu Product'a dönüştür. 
 
                 return RedirectToAction(nameof(Index)); // "Index" olarak da yazılabilir fakat tip güvenli şekilde yazdık.
-
-                var categories = await _categoryService.GetAllAsync();
-
-                var categoryDTO = _mapper.Map<List<CategoryDto>>(categories.ToList());
-
-                ViewBag.categories = new SelectList(categoryDTO, "Id", "Name");
-                return View(); // Başarısız ise View'e geri dönecek . 
             }
+            var categories = await _categoryService.GetAllAsync();
+
+            var categoryDTO = _mapper.Map<List<CategoryDto>>(categories.ToList());
+
+            ViewBag.categories = new SelectList(categoryDTO, "Id", "Name");
+            return View(); // Başarısız ise View'e geri dönecek . 
+        }
+
+        public async Task<IActionResult> Update(int id)
+
+        {
+            var product = await _services.GetByIdAsync(id);
+
+            var categories = await _categoryService.GetAllAsync();
+
+            var categoriesDTO = _mapper.Map<List<CategoryDto>>(categories.ToList());
+
+            ViewBag.cagetories = new SelectList(categoriesDTO, "Id", "Name", product.CategoryId);
+
+            return View(_mapper.Map<ProductDto>(product));
+        }
+        [HttpPost]
+        public async Task<IActionResult> Update(ProductDto productDto)
+        {
+            if (ModelState.IsValid)
+
+            {
+                await _services.UpdateAsync(_mapper.Map<Product>(productDto));
+                return RedirectToAction(nameof(Index));
+
+            }
+            var categories = await _categoryService.GetAllAsync();
+
+            var categoriesDTO = _mapper.Map<List<CategoryDto>>(categories.ToList());
+
+            ViewBag.categories = new SelectList(categoriesDTO, "Id", "Name", productDto.CategoryId);
+
+            return View(productDto);
 
         }
 
 
     }
+
+
 }
+

@@ -16,7 +16,7 @@ namespace NLayer.Service.Validation
 
             RuleFor(x => x.Price).InclusiveBetween(1, int.MaxValue).WithMessage("{PropertyName} must be greater than 0"); // Value Type'lar için aralık belirtmek zorundayız.
             RuleFor(x => x.Stock).InclusiveBetween(1, int.MaxValue).WithMessage("{PropertyName} must be greater than 0");
-            RuleFor(x => x.CategoryId).InclusiveBetween(1, int.MaxValue).WithMessage("{PropertyName} must be greater than 0");
+
 
 
 
