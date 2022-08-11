@@ -52,7 +52,7 @@ namespace NLayer.Web.Controllers
             ViewBag.categories = new SelectList(categoryDTO, "Id", "Name");
             return View(); // Başarısız ise View'e geri dönecek . 
         }
-
+        [ServiceFilter(typeof(NotFoundFilter<Product>))]
         public async Task<IActionResult> Update(int id)
 
         {
