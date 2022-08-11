@@ -27,9 +27,9 @@ namespace NLayer.Web.Controllers
 
         public async Task<IActionResult> Save()
         {
-            var categories = _categoryService.GetAllAsync();
+            var categories = await _categoryService.GetAllAsync();
 
-            var categoriesDTO = _mapper.Map<List<CategoryDto>>(categories);
+            var categoriesDTO = _mapper.Map<List<CategoryDto>>(categories.ToList());
 
             ViewBag.cagetories = new SelectList(categoriesDTO, "Id", "Name"); // DropdownList olarak SelectList alacak . categoriesDTO liste olarak verdik. Bu categoryDTO'dan ID'yi göstereceğiz . Kullanıcılar da Name'ini görecek.
 
@@ -44,8 +44,14 @@ namespace NLayer.Web.Controllers
 
                 return RedirectToAction(nameof(Index)); // "Index" olarak da yazılabilir fakat tip güvenli şekilde yazdık.
 
+                var categories = await _categoryService.GetAllAsync();
+
+                var categoryDTO = _mapper.Map<List<CategoryDto>>(categories.ToList());
+
+                ViewBag.categories = new SelectList(categoryDTO, "Id", "Name");
                 return View(); // Başarısız ise View'e geri dönecek . 
             }
+
         }
 
 
