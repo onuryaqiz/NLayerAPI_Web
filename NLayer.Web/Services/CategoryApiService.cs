@@ -1,4 +1,6 @@
-﻿namespace NLayer.Web.Services
+﻿using NLayer.Core.DTOs;
+
+namespace NLayer.Web.Services
 {
     public class CategoryApiService // DI Container'e eklenecek. ProductsController , Category datalarına ihtiyacı var. Katmanlı mimari kullanmayacağı için ,
                                     // CategoryApiService ve ProductApiService class'larını kullanacak.
@@ -9,6 +11,14 @@
         {
             _httpClient = httpClient; // Hiçbir zaman httpClient'ı kendimiz üretmemeliyiz . _httpClient= new HttpClient() gibi. Bu işlemi DI Container'e bırakmalıyız.
                                       // DI Container nesne örneği vermeli. Daha az nesne örneği oluşturarak , HttpClient'ı kullanabiliriz. Scote yokluğu gibi hatalardan da korunabiliriz.
+        }
+
+
+        public async Task<List<CategoryDto>> GetAllAsync()
+        {
+            var response = await _httpClient.GetFromJsonAsync<CustomResponseDto<List<CategoryDto>>>("categories");
+
+            return response.Data;
         }
     }
 }
