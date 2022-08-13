@@ -28,7 +28,7 @@ namespace NLayer.API.Controllers
         [HttpGet("GetProductsWithCategory")] //"[action]" da yapabiliriz. Metodun ismini action çağıracak. 
         public async Task<IActionResult> GetProductsWithCategory()
         {
-            return CreateActionResult(await _service.GetProductWithCategory()); // Controller içerisinde action metodlarda minimum kod bulundurduk.
+            return CreateActionResult(await _service.GetProductsWithCategory()); // Controller içerisinde action metodlarda minimum kod bulundurduk.
         }
 
 
