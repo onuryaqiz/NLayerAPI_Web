@@ -18,13 +18,13 @@ namespace NLayer.Service.Services
             _productRepository = productRepository;
         }
 
-        public async Task<List<ProductWithCategoryDto>> GetProductWithCategory() // Custom response döneceğiz. 
+        public async Task<CustomResponseDto<List<ProductWithCategoryDto>>> GetProductWithCategory() // Custom response döneceğiz. 
         {
             var products = await _productRepository.GetProductWithCategory();
 
             var productsDto = _mapper.Map<List<ProductWithCategoryDto>>(products); // MVC'de bunu dönülse uygun olur.
 
-            return productsDto;
+            return CustomResponseDto<List<ProductWithCategoryDto>>.Success(200, productsDto);
             // try catch burada yazılacak . API'ın istediği datayı dönüyoruz.
         }
     }
