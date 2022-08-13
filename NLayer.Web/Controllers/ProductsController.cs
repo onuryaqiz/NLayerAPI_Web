@@ -47,11 +47,12 @@ namespace NLayer.Web.Controllers
             }
             var categories = await _categoryService.GetAllAsync();
 
-            var categoryDTO = _mapper.Map<List<CategoryDto>>(categories.ToList());
+            var categoriesDTO = _mapper.Map<List<CategoryDto>>(categories.ToList());
 
-            ViewBag.categories = new SelectList(categoryDTO, "Id", "Name");
+            ViewBag.categories = new SelectList(categoriesDTO, "Id", "Name");
             return View(); // Başarısız ise View'e geri dönecek . 
         }
+
         [ServiceFilter(typeof(NotFoundFilter<Product>))]
         public async Task<IActionResult> Update(int id)
 

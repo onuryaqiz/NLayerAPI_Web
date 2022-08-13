@@ -48,5 +48,63 @@ namespace NLayer.Repository
             base.OnModelCreating(modelBuilder);
         }
 
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) // EFCore SaveChanges'a kadar entity'leri memory'de Track ediyor .SaveChanges metodu çağırınca DB'de yansıtıyor.
+        {
+            foreach (var item in ChangeTracker.Entries())
+            {
+                if (item.Entity is BaseEntity entityReference)
+                {
+                    switch (item.State)
+                    {
+                        case EntityState.Added:
+                            {
+                                entityReference.CreatedDate = DateTime.Now;
+                                break;
+                            }
+                        case EntityState.Modified:
+                            {
+                                Entry(entityReference).Property(x => x.CreatedDate).IsModified = false; // UpdatedDate alanında güncelleme yapılınca , EFCore'a CreatedDate alanında herhangi bir müdahalede bulunma demek istedik.
+
+                                entityReference.UpdatedDate = DateTime.Now;
+                                break;
+                            }
+
+
+                    }
+                }
+            }
+
+
+
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public override int SaveChanges()
+        {
+            foreach (var item in ChangeTracker.Entries())
+            {
+                if (item.Entity is BaseEntity entityReference)
+                {
+                    switch (item.Entity)
+                    {
+                        case EntityState.Added:
+                            {
+                                entityReference.CreatedDate = DateTime.Now;
+                                break;
+                            }
+                        case EntityState.Modified:
+                            {
+                                entityReference.UpdatedDate = DateTime.Now;
+                                break;
+                            }
+
+
+                    }
+                }
+            }
+
+            return base.SaveChanges();
+        }
+
     }
 }
