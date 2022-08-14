@@ -20,7 +20,7 @@ namespace NLayer.Service.Services
 
         public async Task<CustomResponseDto<List<ProductWithCategoryDto>>> GetProductsWithCategory() // Custom response döneceğiz. 
         {
-            var products = await _productRepository.GetProductWithCategory();
+            var products = await _productRepository.GetProductsWithCategory();
 
             var productsDto = _mapper.Map<List<ProductWithCategoryDto>>(products); // MVC'de bunu dönülse uygun olur.
 

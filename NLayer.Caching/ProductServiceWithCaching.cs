@@ -29,7 +29,7 @@ namespace NLayer.Caching
 
             if (!_memoryCache.TryGetValue(CacheProductKey, out _)) // geriye boolean döner. Sadece true/false olduğunu öğreniyoruz. Data var mı yok mu onu öğrenmeye çalışıyoruz.Cache'deki datayı almak istemiyoruz.
             {
-                _memoryCache.Set(CacheProductKey, _productRepository.GetProductWithCategory().Result);
+                _memoryCache.Set(CacheProductKey, _productRepository.GetProductsWithCategory().Result);
             }
         }
         // Open-closed prensibine uygun caching yapıyoruz.
@@ -74,7 +74,7 @@ namespace NLayer.Caching
             return Task.FromResult(product); // await kullanmıyoruz. Static method üzerinden Task.FromResult dönüyoruz.
         }
 
-        public Task<CustomResponseDto<List<ProductWithCategoryDto>>> GetProductWithCategory()
+        public Task<CustomResponseDto<List<ProductWithCategoryDto>>> GetProductsWithCategory()
         {
             var products = _memoryCache.Get<IEnumerable<Product>>(CacheProductKey); // Burada ise , DTO ve customResponse istediği için döndük. 
 

@@ -4,34 +4,35 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using NLayer.Core.DTOs;
 using NLayer.Core.Models;
 using NLayer.Core.Services;
+using NLayer.Web.Services;
 
-namespace NLayer.Web.Controllers
+namespace NLayer.Web.Controllers // Alınacak
 {
     public class ProductsController : Controller
     {
-        private readonly IProductService _services;
-        private readonly ICategoryService _categoryService;
-        private readonly IMapper _mapper;
-        public ProductsController(IProductService services, ICategoryService categoryService, IMapper mapper)
+        private readonly ProductApiService _productApiService;
+
+        private readonly CategoryApiService _categoryApiService;
+
+        public ProductsController(CategoryApiService categoryApiService, ProductApiService productApiService)
         {
-            _services = services;
-            _categoryService = categoryService;
-            _mapper = mapper;
+            _categoryApiService = categoryApiService;
+            _productApiService = productApiService;
         }
 
         public async Task<IActionResult> Index()
         {
 
-            return View((await _services.GetProductsWithCategory()).Data);
+            return View(await _productApiService.GetProductsWithCategoryAsync());
         }
 
         public async Task<IActionResult> Save()
         {
-            var categories = await _categoryService.GetAllAsync();
 
-            var categoriesDTO = _mapper.Map<List<CategoryDto>>(categories.ToList());
+            var categoriesDto = await _categoryApiService.GetAllAsync();
 
-            ViewBag.cagetories = new SelectList(categoriesDTO, "Id", "Name"); // DropdownList olarak SelectList alacak . categoriesDTO liste olarak verdik. Bu categoryDTO'dan ID'yi göstereceğiz . Kullanıcılar da Name'ini görecek.
+
+            ViewBag.cagetories = new SelectList(categoriesDto, "Id", "Name"); // DropdownList olarak SelectList alacak . categoriesDTO liste olarak verdik. Bu categoryDTO'dan ID'yi göstereceğiz . Kullanıcılar da Name'ini görecek.
 
             return View();
         }
@@ -41,15 +42,15 @@ namespace NLayer.Web.Controllers
             if (ModelState.IsValid)
 
             {
-                await _services.AddAsync(_mapper.Map<Product>(productDto)); // ProductDto'yu Product'a dönüştür. 
+                await _productApiService.SaveAsync(productDto); // ProductDto'yu Product'a dönüştür. 
 
                 return RedirectToAction(nameof(Index)); // "Index" olarak da yazılabilir fakat tip güvenli şekilde yazdık.
             }
-            var categories = await _categoryService.GetAllAsync();
+            var categoriesDto = await _categoryApiService.GetAllAsync();
 
-            var categoriesDTO = _mapper.Map<List<CategoryDto>>(categories.ToList());
 
-            ViewBag.categories = new SelectList(categoriesDTO, "Id", "Name");
+
+            ViewBag.categories = new SelectList(categoriesDto, "Id", "Name");
             return View(); // Başarısız ise View'e geri dönecek . 
         }
 
@@ -57,15 +58,15 @@ namespace NLayer.Web.Controllers
         public async Task<IActionResult> Update(int id)
 
         {
-            var product = await _services.GetByIdAsync(id);
+            var product = await _productApiService.GetByIdAsync(id);
 
-            var categories = await _categoryService.GetAllAsync();
+            var categoriesDto = await _categoryApiService.GetAllAsync();
 
-            var categoriesDTO = _mapper.Map<List<CategoryDto>>(categories.ToList());
 
-            ViewBag.cagetories = new SelectList(categoriesDTO, "Id", "Name", product.CategoryId);
 
-            return View(_mapper.Map<ProductDto>(product));
+            ViewBag.cagetories = new SelectList(categoriesDto, "Id", "Name", product.CategoryId);
+
+            return View(product);
         }
         [HttpPost]
         public async Task<IActionResult> Update(ProductDto productDto)
@@ -73,15 +74,15 @@ namespace NLayer.Web.Controllers
             if (ModelState.IsValid)
 
             {
-                await _services.UpdateAsync(_mapper.Map<Product>(productDto));
+                await _productApiService.UpdateAsync(productDto);
                 return RedirectToAction(nameof(Index));
 
             }
-            var categories = await _categoryService.GetAllAsync();
+            var categoriesDto = await _categoryApiService.GetAllAsync();
 
-            var categoriesDTO = _mapper.Map<List<CategoryDto>>(categories.ToList());
 
-            ViewBag.categories = new SelectList(categoriesDTO, "Id", "Name", productDto.CategoryId);
+
+            ViewBag.categories = new SelectList(categoriesDto, "Id", "Name", productDto.CategoryId);
 
             return View(productDto);
 
@@ -90,9 +91,9 @@ namespace NLayer.Web.Controllers
         public async Task<IActionResult> Remove(int id)
 
         {
-            var product = await _services.GetByIdAsync(id);
+            await _productApiService.RemoveAsync(id);
 
-            await _services.RemoveAsync(product);
+
 
             return RedirectToAction(nameof(Index));
         }
