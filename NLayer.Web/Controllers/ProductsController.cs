@@ -6,7 +6,7 @@ using NLayer.Core.Models;
 using NLayer.Core.Services;
 using NLayer.Web.Services;
 
-namespace NLayer.Web.Controllers // Alınacak
+namespace NLayer.Web.Controllers
 {
     public class ProductsController : Controller
     {

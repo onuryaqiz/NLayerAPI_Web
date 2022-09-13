@@ -25,7 +25,7 @@ namespace NLayer.API.Controllers
         }
 
         // GET api/products/GetProductsWithCategory , 2 adet Get olunca Framework hata fırlatmasın diye metodun ismini belirttik.
-        [HttpGet("GetProductsWithCategory")] //"[action]" da yapabiliriz. Metodun ismini action çağıracak. 
+        [HttpGet("[action]")] //"[action]" da yapabiliriz. Metodun ismini action çağıracak. 
         public async Task<IActionResult> GetProductsWithCategory()
         {
             return CreateActionResult(await _service.GetProductsWithCategory()); // Controller içerisinde action metodlarda minimum kod bulundurduk.

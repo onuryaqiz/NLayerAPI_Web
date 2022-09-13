@@ -16,7 +16,7 @@ namespace NLayer.Web.Services
             //var response2 = await _httpClient.GetAsync("products/GetProductsWithCategory"); // Daha önceden bu şekilde yapılıyordu . Fakat .Net 5 ile GetFromJsonASync geldi.
             //response2.Content.ReadAsStringAsync();
 
-            var response = await _httpClient.GetFromJsonAsync<CustomResponseDto<List<ProductWithCategoryDto>>>("products/GetProductsWithCategory");
+            var response = await _httpClient.GetFromJsonAsync<CustomResponseDto<List<ProductWithCategoryDto>>>("api/products/GetProductsWithCategory");
 
             return response.Data;
         }
